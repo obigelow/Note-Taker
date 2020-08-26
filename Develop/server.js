@@ -1,5 +1,6 @@
 const express = require("express")
 const fs = require("fs")
+const path = require("path")
 
 const app = express()
 
@@ -35,9 +36,32 @@ app.get("/api/notes", function(req, res){
     })
 })
 
-app.post("/api/notes", function(req, res) {
-    res.json(req.body)
+app.get("/api/notes/:id", function(req, res){
+    fs.readFile(__dirname + "/db/db.json", "utf8", function(err, data){
+        if (err) throw err;
+        const JSONData = JSON.parse(data)
+        console.log(JSONData)
+        JSONData.forEach(noteData => {
+            if (req.params.id === noteData.id) {
+                res.json(noteData)
+            }
+  
+            res.send("Sorry we cannot find your note, maybe chack your id number to make sure it is correct.")
 
+        })
+    })
+})
+
+app.post("/api/notes", function(req, res) {
+    console.log(req.body)
+    fs.appendFile(__dirname + "/db/db.json", JSON.stringify(req.body), function(err){
+        if (err) throw err;
+        res.send()
+    })
+})
+app.delete("/api/notes/:id", function(req, res){
+    const note = res.params
+    console.log(note)
 })
 
 app.listen(PORT, function() {
