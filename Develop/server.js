@@ -43,20 +43,24 @@ app.get("/api/notes/:id", function(req, res){
         console.log(JSONData)
         JSONData.forEach(noteData => {
             if (req.params.id === noteData.id) {
-                res.json(noteData)
+                return res.json(noteData)
             }
-  
-            res.send("Sorry we cannot find your note, maybe chack your id number to make sure it is correct.")
 
         })
     })
 })
 
 app.post("/api/notes", function(req, res) {
-    console.log(req.body)
-    fs.appendFile(__dirname + "/db/db.json", JSON.stringify(req.body), function(err){
+    let count = 1;
+    const addId = req.body;
+    addId.id = count;
+    count++
+    console.log(addId)
+    
+    fs.readFile(__dirname + "/db/db.json", "utf8", function(err, data){
         if (err) throw err;
-        res.send()
+        const updateData = data.split("]").join(`, ${JSON.stringify(req.body)} ]`)
+        fs.writeFile(__dirname + "/db/db.json", updateData, err => {if (err) throw err})
     })
 })
 app.delete("/api/notes/:id", function(req, res){
