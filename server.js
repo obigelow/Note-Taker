@@ -85,7 +85,7 @@ app.delete("/api/notes/:id", function (req, res) {
         }
         fs.writeFile(__dirname + "/db/db.json", JSON.stringify(deleteData), err => { if (err) throw err })
     })
-    res.redirect("/notes")
+    res.send("true")
 
 
 })
