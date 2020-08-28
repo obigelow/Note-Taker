@@ -71,6 +71,7 @@ app.post("/api/notes", function (req, res) {
             console.log(updateData)
         }
     })
+    res.redirect("/notes")
 })
 
 app.delete("/api/notes/:id", function (req, res) {
@@ -79,12 +80,13 @@ app.delete("/api/notes/:id", function (req, res) {
         const deleteData = JSON.parse(data.split());
         console.log(deleteData)
         deleteData.splice(req.params.id - 1, 1)
-        for (let i = 1; i < deleteData.length; i++){
-            deleteData[i].id = i
+        for (let i = 0; i < deleteData.length; i++){
+            deleteData[i].id = i + 1
         }
         fs.writeFile(__dirname + "/db/db.json", JSON.stringify(deleteData), err => { if (err) throw err })
-
     })
+    res.redirect("/notes")
+
 
 })
 
