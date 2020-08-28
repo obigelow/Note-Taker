@@ -47,7 +47,6 @@ app.get("/api/notes/:id", function (req, res) {
     fs.readFile(__dirname + "/db/db.json", "utf8", function (err, data) {
         if (err) throw err;
         const JSONData = JSON.parse(data)
-        console.log(JSONData)
         JSONData.forEach(noteData => {
             if (req.params.id === noteData.id) {
                 return res.json(noteData)
@@ -61,12 +60,12 @@ app.post("/api/notes", function (req, res) {
     fs.readFile(__dirname + "/db/db.json", "utf8", function (err, data) {
         if (err) throw err;
         else if (data === "") {
-            req.body.id = 0;
+            req.body.id = 1;
             fs.writeFile(__dirname + "/db/db.json", `[${JSON.stringify(req.body)}]`, err => { if (err) throw err })
         }
         else {
             const updateData = JSON.parse(data.split())
-            req.body.id = updateData.length;
+            req.body.id = updateData.length + 1;
             updateData.push(req.body)
             fs.writeFile(__dirname + "/db/db.json", JSON.stringify(updateData), err => { if (err) throw err })
             console.log(updateData)
@@ -79,8 +78,8 @@ app.delete("/api/notes/:id", function (req, res) {
         if (err) throw err;
         const deleteData = JSON.parse(data.split());
         console.log(deleteData)
-        deleteData.splice(req.params.id, 1)
-        for (let i = 0; i < deleteData.length; i++){
+        deleteData.splice(req.params.id - 1, 1)
+        for (let i = 1; i < deleteData.length; i++){
             deleteData[i].id = i
         }
         fs.writeFile(__dirname + "/db/db.json", JSON.stringify(deleteData), err => { if (err) throw err })
